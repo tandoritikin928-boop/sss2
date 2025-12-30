@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script Community Hub</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #2a0015 0%, transparent 45%),
+    linear-gradient(135deg, #030308, #0a0a14, #12000c);
+  color: #e5e7eb;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* ================= LOADER ================= */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, #200010, #050507);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  transition: opacity 1s ease, visibility 1s ease;
+}
+#loader.hide {
+  opacity: 0;
+  visibility: hidden;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); filter: drop-shadow(0 0 15px #ff004c); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 40px #ff007a); }
+}
+#loader img {
+  width: 120px;
+  animation: pulse 2s infinite;
+}
+
+/* ================= NEON ================= */
+@keyframes glow {
+  0%,100% { text-shadow: 0 0 10px rgba(255,0,80,.4); }
+  50% { text-shadow: 0 0 30px rgba(255,0,120,.95); }
+}
+.neon { animation: glow 3s infinite; }
+
+/* ================= LOGO ================= */
+@keyframes logoGlow {
+  0%,100% { filter: drop-shadow(0 0 15px rgba(255,0,100,.5)); }
+  50% { filter: drop-shadow(0 0 45px rgba(255,0,150,1)); }
+}
+.logo-main {
+  max-width: 140px;
+  animation: logoGlow 4s infinite;
+  pointer-events: none;
+}
+
+/* ================= UI ================= */
+nav a {
+  margin: 0 0.8rem;
+  font-weight: 700;
+  color: #d946ef;
+  text-decoration: none;
+}
+nav a:hover { text-decoration: underline; }
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,0,80,.3);
+  border-radius: 22px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 60px rgba(255,0,80,.2);
+  padding: 2.8rem;
+  margin: 3rem auto;
+  max-width: 580px;
+  text-align: center;
+}
+
+.btn {
+  display: block;
+  padding: 0.95rem 1.8rem;
+  border-radius: 18px;
+  font-weight: 800;
+  margin: .6rem auto;
+  cursor: pointer;
+  transition: .3s;
+}
+.btn:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+/* ================= DANGER BAR ================= */
+.danger {
+  margin-top: .6rem;
+}
+.danger-label {
+  font-size: .75rem;
+  letter-spacing: .1em;
+  margin-bottom: .3rem;
+}
+.danger-bar {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #111;
+}
+.danger-fill {
+  height: 100%;
+  animation: dangerPulse 2s infinite;
+}
+@keyframes dangerPulse {
+  0%,100% { filter: brightness(1); }
+  50% { filter: brightness(1.5); }
+}
+
+/* ================= TOAST ================= */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg,#22c55e,#10b981);
+  color: #020617;
+  padding: .8rem 1.8rem;
+  border-radius: 999px;
+  font-weight: 900;
+  opacity: 0;
+  transition: .35s;
+  z-index: 9999;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <img src="https://elements-resized.envatousercontent.com/elements-cover-images/14cd16f1-583e-401b-9786-033155c0ba92?w=2038&cf_fit=scale-down&q=85&format=auto">
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">クリップボードに追加されました</div>
+
+<!-- AUDIO -->
+<audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-click-error-1110.mp3"></audio>
+<audio id="bootSound" src="https://assets.mixkit.co/sfx/preview/mixkit-dark-ambient-transition-1254.mp3"></audio>
+
+<!-- NAV -->
+<nav class="text-center py-4 bg-black/60 backdrop-blur-md sticky top-0 z-50">
+  <a href="#home">HOME</a>
+  <a href="#scripts">Scripts</a>
+  <a href="#executors">Executors</a>
+  <a href="#bypass">Bypass</a>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="card">
+  <img class="logo-main mx-auto mb-4"
+  src="https://elements-resized.envatousercontent.com/elements-cover-images/14cd16f1-583e-401b-9786-033155c0ba92?w=2038&cf_fit=scale-down&q=85&format=auto">
+
+  <h1 class="text-4xl font-black neon mb-3">SCRIPT HUB</h1>
+  <p class="text-gray-300 text-sm">
+    危険・混沌・情報。<br>すべてを整理したダークポータル。
+  </p>
+</section>
+
+<!-- SCRIPTS -->
+<section id="scripts" class="card">
+  <h2 class="text-2xl neon text-red-400 mb-4">Scripts</h2>
+
+  <button class="btn bg-purple-700"
+    onclick="copyText(`loadstring(game:HttpGet('https://raw.githubusercontent.com/nertholkerln-ux/mm2/refs/heads/main/v3.lua'))()`)">
+    AutoFarm
+  </button>
+  <div class="danger">
+    <div class="danger-label text-red-400">DANGER LEVEL : HIGH</div>
+    <div class="danger-bar">
+      <div class="danger-fill bg-red-500 w-[80%]"></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXECUTORS -->
+<section id="executors" class="card">
+  <h2 class="text-2xl neon text-red-400 mb-4">Executors</h2>
+
+  <div class="btn bg-indigo-700"
+    onclick="window.open('https://deltaexploits.gg','_blank')">
+    Delta Executor
+  </div>
+
+  <div class="danger">
+    <div class="danger-label text-pink-400">DANGER LEVEL : EXTREME</div>
+    <div class="danger-bar">
+      <div class="danger-fill bg-pink-600 w-[95%]"></div>
+    </div>
+  </div>
+</section>
+
+<!-- BYPASS -->
+<section id="bypass" class="card">
+  <h2 class="text-2xl neon text-red-500 mb-4">ZEN / IZEN Bypass</h2>
+
+  <a class="btn bg-gradient-to-r from-red-700 via-purple-800 to-black"
+     href="https://izen.lol" target="_blank">
+    Bypass Site
+  </a>
+
+  <div class="danger">
+    <div class="danger-label text-red-500">DANGER LEVEL : ☠︎ MAX</div>
+    <div class="danger-bar">
+      <div class="danger-fill bg-red-700 w-[100%]"></div>
+    </div>
+  </div>
+</section>
+
+<!-- JS -->
+<script>
+let audioUnlocked = false;
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+  document.getElementById("bootSound").play().catch(()=>{});
+  audioUnlocked = true;
+}
+
+window.addEventListener("click", unlockAudio, { once: true });
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById("clickSound").play().catch(()=>{});
+    const t = document.getElementById("toast");
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
+  });
+}
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("loader").classList.add("hide");
+  }, 1200);
+});
+</script>
+
+</body>
+</html>
