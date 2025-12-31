@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script Community Hub</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* ===== BASE ===== */
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #200015 0%, transparent 45%),
+    linear-gradient(135deg, #050507, #0a0a12, #12000c);
+  color: #e5e7eb;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* ===== NEON ===== */
+@keyframes glow {0%,100% { text-shadow:0 0 8px rgba(255,0,80,.45); } 50% { text-shadow:0 0 26px rgba(255,0,120,.95);}}
+.neon { animation: glow 3s ease-in-out infinite; }
+
+/* ===== LOGO ===== */
+@keyframes logoGlow {0%,100%{filter:drop-shadow(0 0 12px rgba(255,0,100,.4));}50%{filter:drop-shadow(0 0 32px rgba(255,0,150,.9));}}
+.logo-main { max-width:140px;width:28vw;margin-bottom:1rem;animation:logoGlow 4s ease-in-out infinite;pointer-events:none; }
+
+/* ===== NAV ===== */
+nav a { margin:0 0.8rem;font-weight:700;color:#d946ef;text-decoration:none; }
+nav a:hover{text-decoration:underline;}
+
+/* ===== BUTTON ===== */
+.btn { display:block;padding:0.9rem 1.7rem;border-radius:16px;font-weight:700;text-align:center;margin:0.55rem auto;cursor:pointer;transition:.3s ease;}
+.btn:hover{transform:translateY(-2px) scale(1.02);}
+
+/* ===== CARD ===== */
+.card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,0,80,0.25); border-radius:20px; backdrop-filter:blur(14px); box-shadow:0 0 55px rgba(255,0,80,0.18); padding:2.6rem; margin:2.8rem auto; max-width:560px; text-align:center; transition:.35s ease;}
+.card:hover { box-shadow:0 0 90px rgba(255,0,120,0.55); }
+
+/* ===== TOAST ===== */
+.toast { position:fixed; bottom:26px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg,#22c55e,#10b981); color:#020617; padding:.75rem 1.7rem; border-radius:999px; font-weight:800; opacity:0; pointer-events:none; transition:.35s ease; z-index:9999; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(-12px); }
+
+/* ===== WELCOME UI ===== */
+#welcomeOverlay { position:fixed; inset:0; background:rgba(255,255,255,0.05); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:99998; flex-direction:column; cursor:pointer; transition:opacity 1s ease;}
+#welcomeText { font-size:2rem; font-weight:bold; color:#fff; text-align:center;}
+#welcomeText span { display:inline-block; opacity:0; transform:translateY(-10px); animation:floatUp 0.5s forwards; text-shadow:0 0 6px rgba(255,255,255,0.8);}
+@keyframes floatUp { to { opacity:1; transform:translateY(0px); } }
+#skipBtn { margin-top:1rem; font-size:0.75rem; color:#ccc; cursor:pointer;}
+@keyframes fadeFog { 0%{opacity:1;filter:blur(0px);} 100%{opacity:0;filter:blur(12px);} }
+
+/* ===== PAGE HIDDEN ===== */
+.page.hidden { display:none; }
+</style>
+</head>
+<body>
+
+<!-- WELCOME OVERLAY -->
+<div id="welcomeOverlay" onclick="nextWelcomeMessage()">
+  <div id="welcomeText"></div>
+  <div id="skipBtn" onclick="skipWelcome(event)">Skip</div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">クリップボードに追加されました</div>
+
+<!-- NAV -->
+<nav class="text-center py-4 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+  <a onclick="showPage('home')">HOME</a>
+  <a onclick="showPage('scripts')">Scripts</a>
+  <a onclick="showPage('executors')">Executors</a>
+  <a onclick="showPage('bypass')">Bypass</a>
+  <a onclick="showPage('tools')">Tools</a>
+  <a onclick="showPage('search')">Search</a>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="card page">
+  <img src="https://elements-resized.envatousercontent.com/elements-cover-images/14cd16f1-583e-401b-9786-033155c0ba92?w=2038&cf_fit=scale-down&q=85&format=auto"
+       class="logo-main mx-auto" alt="logo">
+  <h1 class="text-4xl font-black neon mb-3">SCRIPT HUB</h1>
+  <p class="text-gray-300 text-sm mb-4">
+    見るだけOK。聞くだけOK。<br>Script・Executor 情報をまとめたダーク系コミュニティ。
+  </p>
+  <a class="btn bg-gradient-to-r from-green-500 to-emerald-600" href="https://line.me/ti/g2/ctACQKVIXgkV5Hp0U5qESr3dGxIo-cuqx95cuQ" target="_blank">LINE オープンチャット</a>
+  <a class="btn bg-gradient-to-r from-indigo-600 to-pink-600" href="https://discord.gg/y3phEYyy" target="_blank">Discord サーバー</a>
+</section>
+
+<!-- SCRIPTS -->
+<section id="scripts" class="card page hidden">
+  <h2 class="text-2xl font-bold text-red-400 mb-4 neon">Scripts</h2>
+  <button class="btn bg-purple-700" onclick="copyText(`loadstring(game:HttpGet('https://raw.githubusercontent.com/nertholkerln-ux/mm2/refs/heads/main/v3.lua'))()`)">AutoFarm</button>
+  <button class="btn bg-blue-700" onclick="copyText(`loadstring(game:HttpGet('https://pastebin.com/raw/gTJKC43M'))()`)">AimBot / ESP</button>
+  <button class="btn bg-green-700" onclick="copyText(`loadstring(game:HttpGet('https://pastebin.com/raw/recbtWPS'))()`)">Utility</button>
+</section>
+
+<!-- EXECUTORS -->
+<section id="executors" class="card page hidden">
+  <h2 class="text-2xl font-bold text-red-400 mb-4 neon">Executors</h2>
+  <div class="btn bg-indigo-700" onclick="toggleDelta()">Delta (iOS / Android)</div>
+  <div id="deltaSelect" class="hidden mt-3 space-y-2">
+    <div class="btn bg-black border border-indigo-500" onclick="openLink('https://deltaexploits.gg/delta-executor-ios')">iOS</div>
+    <div class="btn bg-black border border-indigo-500" onclick="openLink('https://deltaexploits.gg/delta-executor-android')">Android</div>
+  </div>
+  <div class="mt-5 text-red-500 font-bold">Krnl（運営停止）</div>
+  <p class="text-xs text-gray-400 mt-1">krnlはただいまkeyが取れないのでLinkを提供できません</p>
+</section>
+
+<!-- BYPASS -->
+<section id="bypass" class="card page hidden">
+  <h2 class="text-2xl font-bold text-red-500 mb-4 neon">Bypass</h2>
+  <a class="btn bg-gradient-to-r from-red-700 via-purple-800 to-black" href="https://izen.lol" target="_blank">⚠️ ZEN / IZEN Bypass Site</a>
+</section>
+
+<!-- TOOLS -->
+<section id="tools" class="card page hidden">
+  <h2 class="text-2xl font-bold text-red-400 mb-4 neon">External Tools</h2>
+  <a class="btn bg-gray-800" href="https://techybuff.com/esign/" target="_blank">E-sign</a>
+  <a class="btn bg-gray-800" href="https://khoindvn.io.vn/" target="_blank">k-esign</a>
+  <a class="btn bg-gray-800" href="https://www.mediafire.com/file/i4p17hpjm8q81jc/Delta-2.701.ipa/file" target="_blank">Delta IPA</a>
+</section>
+
+<!-- SEARCH -->
+<section id="search" class="card page hidden">
+  <h2 class="text-2xl font-bold text-red-400 mb-4 neon">Script Search</h2>
+  <div class="flex gap-2 justify-center mb-4">
+    <input id="sbQuery" class="px-4 py-2 rounded-lg bg-black/60 border border-red-500 text-white w-64" placeholder="Search scripts...">
+    <button class="btn bg-red-700" onclick="searchSB()">SEARCH</button>
+  </div>
+  <iframe id="sbFrame" src="https://scriptblox.com" class="w-full h-[520px] rounded-xl border border-red-500/40"></iframe>
+</section>
+
+<script>
+// ===== PAGE SWITCH =====
+function showPage(id){
+  document.querySelectorAll('.page').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+// ===== DELTA =====
+function toggleDelta() { document.getElementById('deltaSelect').classList.toggle('hidden'); }
+function openLink(url) { window.open(url,'_blank'); }
+
+// ===== COPY TEXT =====
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    document.getElementById('toast').classList.add('show');
+    setTimeout(()=>document.getElementById('toast').classList.remove('show'),2000);
+  });
+}
+
+// ===== SEARCH =====
+function searchSB(){
+  const q = document.getElementById('sbQuery').value;
+  if(!q) return;
+  document.getElementById('sbFrame').src = "https://scriptblox.com/?q="+encodeURIComponent(q);
+}
+
+// ===== WELCOME FLOATING TEXT =====
+const welcomeMessages = [
+  "ようこそ Area Hub へ。私のサイトへ歓迎します。",
+  "安全なオープンチャット参加と自由度の高いDiscordコミュニティです。",
+  "Script・Executor・Tools情報を一括管理、ダークポータル体験。"
+];
+let welcomeIndex = 0;
+const welcomeText = document.getElementById('welcomeText');
+const welcomeOverlay = document.getElementById('welcomeOverlay');
+
+function showWelcome(index){
+  welcomeText.innerHTML='';
+  const msg = welcomeMessages[index];
+  for(let i=0;i<msg.length;i++){
+    const span = document.createElement('span');
+    span.textContent=msg[i];
+    span.style.animationDelay=(i*0.08)+'s';
+    span.style.textShadow="0 0 6px rgba(255,255,255,0.8)";
+    welcomeText.appendChild(span);
+  }
+}
+
+function nextWelcomeMessage(){
+  welcomeOverlay.style.transition='opacity 0.6s ease';
+  welcomeOverlay.style.opacity='0.5';
+  setTimeout(()=>{
+    welcomeIndex = (welcomeIndex+1)%welcomeMessages.length;
+    showWelcome(welcomeIndex);
+    welcomeOverlay.style.opacity='1';
+  },300);
+}
+
+function skipWelcome(e){
+  e.stopPropagation();
+  welcomeOverlay.style.animation='fadeFog 1.2s forwards';
+  setTimeout(()=>{ welcomeOverlay.style.display='none'; },1200);
+}
+
+showWelcome(0);
+</script>
+</body>
+</html>
